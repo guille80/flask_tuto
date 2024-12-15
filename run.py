@@ -20,17 +20,22 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
 db = SQLAlchemy(app)
-from models import User
+from models import User, Post
 
 posts = []
 
 @app.route("/")
 def index():
+    posts = Post.get_all()
     return render_template("index.html", posts=posts)
+
 
 @app.route("/p/<string:slug>/")
 def show_post(slug):
-    return render_template("post_view.html", slug_title=slug)
+    post = Post.get_by_slug(slug)
+    if post is None:
+        abort(404)
+    return render_template("post_view.html", post=post)
 
 
 @app.route("/admin/post/", methods=['GET', 'POST'], defaults={'post_id': None})
@@ -40,11 +45,10 @@ def post_form(post_id):
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
-        title_slug = form.title_slug.data
         content = form.content.data
 
-        post = {'title': title, 'title_slug': title_slug, 'content': content}
-        posts.append(post)
+        post = Post(user_id=current_user.id, title=title, content=content)
+        post.save()
 
         return redirect(url_for('index'))
     return render_template("admin/post_form.html", form=form)
