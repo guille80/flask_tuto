@@ -1,3 +1,4 @@
+from flask import url_for
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from slugify import slugify
@@ -12,7 +13,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
@@ -37,38 +38,6 @@ class User(db.Model, UserMixin):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
         
-# from flask_login import UserMixin
-# from werkzeug.security import generate_password_hash, check_password_hash
-
-
-# class User(UserMixin):
-
-#     def __init__(self, id, name, email, password, is_admin=False): #         self.id = id
-#         self.name = name
-#         self.email = email
-#         self.password = generate_password_hash(password)
-#         self.is_admin = is_admin
-
-#     def set_password(self, password):
-#         self.password = generate_password_hash(password)
-
-#     def check_password(self, password):
-#         return check_password_hash(self.password, password)
-
-#     def __repr__(self):
-#         return '<User {}>'.format(self.email)
-
-
-# users = []
-
-
-# def get_user(email):
-#     for user in users:
-#         if user.email == email:
-#             return user
-#     return None
-
-
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('blog_user.id', ondelete='CASCADE'), nullable=False)
