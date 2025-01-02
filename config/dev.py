@@ -4,6 +4,7 @@ from .default import *
 
 # TESTING = True
 DEBUG = True
+DEBUG_MODE = True
 APP_ENV = APP_ENV_DEVELOPMENT
 
 # SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Qwerty123@localhost:5432/miniblog'
